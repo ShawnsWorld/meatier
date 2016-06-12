@@ -22,15 +22,15 @@ const prefetchPlugins = prefetches.map(specifier => new webpack.PrefetchPlugin(s
 
 const babelQuery = {
   plugins: [
-    ["transform-decorators-legacy"],
-    ["react-transform", {
+    ['transform-decorators-legacy'],
+    ['react-transform', {
       transforms: [{
-        transform: "react-transform-hmr",
-        imports: ["react"],
-        locals: ["module"]
+        transform: 'react-transform-hmr',
+        imports: ['react'],
+        locals: ['module']
       }, {
-        transform: "react-transform-catch-errors",
-        imports: ["react", "redbox-react"]
+        transform: 'react-transform-catch-errors',
+        imports: ['react', 'redbox-react']
       }]
     }]
   ]
@@ -41,7 +41,12 @@ export default {
   devtool: 'eval',
   context: srcDir,
   entry: {
-    app: ['babel-polyfill', 'client/client.js', 'webpack-hot-middleware/client']
+    app: [
+      'babel-polyfill',
+      'react-hot-loader/patch',
+      'client/client.js',
+      'webpack-hot-middleware/client'
+    ]
   },
   output: {
     // https://github.com/webpack/webpack/issues/1752
@@ -52,12 +57,13 @@ export default {
   },
   plugins: [
     ...prefetchPlugins,
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
-      "__CLIENT__": true,
-      "__PRODUCTION__": false,
-      "process.env.NODE_ENV": JSON.stringify('development')
+      '__CLIENT__': true,
+      '__PRODUCTION__': false,
+      'process.env.NODE_ENV': JSON.stringify('development')
     }),
     new webpack.EnvironmentPlugin([
       'PROTOCOL',
@@ -65,7 +71,6 @@ export default {
       'PORT'
     ]),
     new HappyPack({
-      // id: 'js',
       loaders: ['babel'],
       threads: 4
     })
